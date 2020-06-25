@@ -1,14 +1,14 @@
 Name:           libphonenumber
-Version:        8.10.14
-Release:        1
-License:        Apache-2.0
 Summary:        A library for manipulating international phone numbers
-URL:           https://github.com/googlei18n/libphonenumber/
-Source0:       %{name}-%{version}.tar.gz
+Version:        8.12.6
+Release:        1
+License:        ASL 2.0 and BSD and MIT
+URL:            https://github.com/googlei18n/libphonenumber/
+Source0:        %{name}-%{version}.tar.gz
 
 # Submitted upstream: https://github.com/google/libphonenumber/pull/2363
+# https://github.com/google/libphonenumber/pull/2482
 Patch1:        0001-Add-ability-for-the-C-library-to-link-against-protob.patch
-Patch2:        0002-Add-build-option-to-disable-regenerating-the-metadat.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
@@ -41,9 +41,7 @@ Requires:       protobuf-devel
 Contains files needed to development with %{name}.
 
 %prep
-%setup -q -n %{name}-%{version}/%{name}
-%patch1 -p1
-%patch2 -p1
+%autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
 
@@ -56,25 +54,21 @@ Contains files needed to development with %{name}.
 # USE_PROTOBUF_LITE=ON - link to protobuf-lite to save some disk space
 # REGENERATE_METADATA=OFF - don't regenerate metadata with the java based tool
 
-cmake -DCMAKE_SKIP_RPATH=ON \
-      -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-      -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
-      -DCMAKE_CXX_STANDARD=11 \
-      -DCMAKE_PROGRAM_PATH=$PWD/.. \
-      -DBUILD_GEOCODER=OFF \
-      -DUSE_ALTERNATE_FORMATS=OFF \
-      -DUSE_LITE_METADATA=ON \
-      -DUSE_ICU_REGEXP=ON \
-      -DUSE_RE2=OFF \
-      -DUSE_PROTOBUF_LITE=ON \
-      -DREGENERATE_METADATA=OFF \
-      cpp
+%cmake -DCMAKE_PROGRAM_PATH=$PWD/.. \
+       -DCMAKE_CXX_STANDARD=11 \
+       -DBUILD_GEOCODER=OFF \
+       -DUSE_ALTERNATE_FORMATS=OFF \
+       -DUSE_LITE_METADATA=ON \
+       -DUSE_ICU_REGEXP=ON \
+       -DUSE_RE2=OFF \
+       -DUSE_PROTOBUF_LITE=ON \
+       -DREGENERATE_METADATA=OFF \
+       cpp
 
-make %{?_smp_mflags}
+%make_build
 
 %install
-make DESTDIR=%{buildroot} install
-rm %{buildroot}/%{_libdir}/*.a
+%make_install
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -84,28 +78,19 @@ rm %{buildroot}/%{_libdir}/*.a
 
 %files
 %defattr(-, root, root, -)
-%license LICENSE
-%doc AUTHORS
-%doc README.md
+%license cpp/LICENSE
+%license LICENSE.Chromium
 %{_libdir}/libphonenumber.so.*
 
 %files doc
+%defattr(-, root, root, -)
 %doc AUTHORS
 %doc CONTRIBUTORS
 %doc README.md
 %doc FALSEHOODS.md
+%doc cpp/README
 
 %files devel
 %defattr(-, root, root, -)
-%dir %{_includedir}/phonenumbers
-%dir %{_includedir}/phonenumbers/base
-%dir %{_includedir}/phonenumbers/base/memory
-%dir %{_includedir}/phonenumbers/base/synchronization
-%dir %{_includedir}/phonenumbers/utf
-%{_includedir}/phonenumbers/*.h
-%{_includedir}/phonenumbers/base/*.h
-%{_includedir}/phonenumbers/base/memory/*.h
-%{_includedir}/phonenumbers/base/synchronization/*.h
-%{_includedir}/phonenumbers/utf/*.h
+%{_includedir}/phonenumbers
 %{_libdir}/libphonenumber.so
-
