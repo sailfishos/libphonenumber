@@ -1,6 +1,6 @@
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        8.12.6
+Version:        8.12.12
 Release:        1
 License:        ASL 2.0 and BSD and MIT
 URL:            https://github.com/googlei18n/libphonenumber/
@@ -12,12 +12,11 @@ Patch1:        0001-Add-ability-for-the-C-library-to-link-against-protob.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
-BuildRequires:  gtest-devel
-BuildRequires:  protobuf-lite-devel
 BuildRequires:  protobuf-compiler
+BuildRequires:  protobuf-lite-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(icu-i18n)
-
+BuildRequires:  pkgconfig(gtest)
 Requires:  protobuf-lite
 
 %description
@@ -28,13 +27,14 @@ the Android framework since 4.0 (Ice Cream Sandwich).
 
 %package doc
 Summary:        Documentation of %{name}
+BuildArch:      noarch
 
 %description doc
 Contains documentation files of %{name}.
 
 %package devel
 Summary:        Development package of %{name}
-Requires:       libphonenumber = %{version}
+Requires:       %{name} = %{version}
 Requires:       protobuf-devel
 
 %description devel
@@ -47,22 +47,22 @@ Contains files needed to development with %{name}.
 
 # Explanation of cmake options:
 # BUILD_GEOCODER=OFF - we currently don't need the offline geocoder library
-# USE_ALTERNATE_FORMATS=OFF - we don't want to use alternate formatting
-# USE_LITE_METADATA=OFF - remove some unnecessary data, see https://github.com/google/libphonenumber/blob/master/FAQ.md#what-is-the-metadatalitejsmetadata_lite-option
-# USE_ICU_REGEXP=ON - Use ICU regexes
-# USE_RE2=OFF - don't use google's re2 library (ICU is already in our default install, RE2 isn't)
-# USE_PROTOBUF_LITE=ON - link to protobuf-lite to save some disk space
 # REGENERATE_METADATA=OFF - don't regenerate metadata with the java based tool
+# USE_ALTERNATE_FORMATS=OFF - we don't want to use alternate formatting
+# USE_PROTOBUF_LITE=ON - link to protobuf-lite to save some disk space
+# USE_ICU_REGEXP=ON - Use ICU regexes
+# USE_LITE_METADATA=ON - remove some unnecessary data, see https://github.com/google/libphonenumber/blob/master/FAQ.md#what-is-the-metadatalitejsmetadata_lite-option
+# USE_RE2=OFF - don't use google's re2 library (ICU is already in our default install, RE2 isn't)
+# BUILD_STATIC_LIB=OFF - we don't need static libraries
 
-%cmake -DCMAKE_PROGRAM_PATH=$PWD/.. \
-       -DCMAKE_CXX_STANDARD=11 \
-       -DBUILD_GEOCODER=OFF \
-       -DUSE_ALTERNATE_FORMATS=OFF \
-       -DUSE_LITE_METADATA=ON \
-       -DUSE_ICU_REGEXP=ON \
-       -DUSE_RE2=OFF \
-       -DUSE_PROTOBUF_LITE=ON \
+%cmake -DBUILD_GEOCODER=OFF \
        -DREGENERATE_METADATA=OFF \
+       -DUSE_ALTERNATE_FORMATS=OFF \
+       -DUSE_PROTOBUF_LITE=ON \
+       -DUSE_ICU_REGEXP=ON \
+       -DUSE_LITE_METADATA=ON \
+       -DUSE_RE2=OFF \
+       -DBUILD_STATIC_LIB=OFF \
        cpp
 
 %make_build
