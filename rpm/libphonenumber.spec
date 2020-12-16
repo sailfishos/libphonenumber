@@ -10,6 +10,9 @@ Source0:        %{name}-%{version}.tar.gz
 # https://github.com/google/libphonenumber/pull/2482
 Patch1:        0001-Add-ability-for-the-C-library-to-link-against-protob.patch
 
+# https://github.com/google/libphonenumber/pull/2556
+Patch2:        0001-Fix-geocoding-build-when-static-libraries-are-off.patch
+
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  protobuf-compiler
@@ -25,9 +28,17 @@ formatting, storing and validating international phone numbers. The
 Java version is optimized for running on smartphones, and is used by
 the Android framework since 4.0 (Ice Cream Sandwich).
 
+%package geocoding
+Summary:        Geocoding library of %{name}
+Requires:       %{name} = %{version}
+
 %package doc
 Summary:        Documentation of %{name}
 BuildArch:      noarch
+
+%description geocoding
+Contains geocoding information of %{name}, which can be used to
+decide which phone number belongs to which region.
 
 %description doc
 Contains documentation files of %{name}.
@@ -46,7 +57,7 @@ Contains files needed to development with %{name}.
 %build
 
 # Explanation of cmake options:
-# BUILD_GEOCODER=OFF - we currently don't need the offline geocoder library
+# BUILD_GEOCODER=ON - enable the geocoder library
 # REGENERATE_METADATA=OFF - don't regenerate metadata with the java based tool
 # USE_ALTERNATE_FORMATS=OFF - we don't want to use alternate formatting
 # USE_PROTOBUF_LITE=ON - link to protobuf-lite to save some disk space
@@ -55,7 +66,7 @@ Contains files needed to development with %{name}.
 # USE_RE2=OFF - don't use google's re2 library (ICU is already in our default install, RE2 isn't)
 # BUILD_STATIC_LIB=OFF - we don't need static libraries
 
-%cmake -DBUILD_GEOCODER=OFF \
+%cmake -DBUILD_GEOCODER=ON \
        -DREGENERATE_METADATA=OFF \
        -DUSE_ALTERNATE_FORMATS=OFF \
        -DUSE_PROTOBUF_LITE=ON \
@@ -82,6 +93,10 @@ Contains files needed to development with %{name}.
 %license LICENSE.Chromium
 %{_libdir}/libphonenumber.so.*
 
+%files geocoding
+%defattr(-, root, root, -)
+%{_libdir}/libgeocoding.so.*
+
 %files doc
 %defattr(-, root, root, -)
 %doc AUTHORS
@@ -94,3 +109,4 @@ Contains files needed to development with %{name}.
 %defattr(-, root, root, -)
 %{_includedir}/phonenumbers
 %{_libdir}/libphonenumber.so
+%{_libdir}/libgeocoding.so
