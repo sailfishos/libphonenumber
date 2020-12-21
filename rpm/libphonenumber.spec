@@ -46,6 +46,7 @@ Contains documentation files of %{name}.
 %package devel
 Summary:        Development package of %{name}
 Requires:       %{name} = %{version}
+Requires:       %{name}-geocoding = %{version}
 Requires:       protobuf-devel
 
 %description devel
