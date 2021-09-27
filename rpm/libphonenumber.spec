@@ -1,26 +1,21 @@
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        8.12.12
+Version:        8.12.33
 Release:        1
 License:        ASL 2.0 and BSD and MIT
-URL:            https://github.com/googlei18n/libphonenumber/
+URL:            https://github.com/google/libphonenumber
 Source0:        %{name}-%{version}.tar.gz
 
-# Submitted upstream: https://github.com/google/libphonenumber/pull/2363
-# https://github.com/google/libphonenumber/pull/2482
-Patch1:        0001-Add-ability-for-the-C-library-to-link-against-protob.patch
-
 # https://github.com/google/libphonenumber/pull/2556
-Patch2:        0001-Fix-geocoding-build-when-static-libraries-are-off.patch
+Patch1:         0001-Fix-geocoding-build-when-static-libraries-are-off.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  protobuf-compiler
-BuildRequires:  protobuf-lite-devel
+BuildRequires:  pkgconfig(protobuf-lite)
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(icu-i18n)
 BuildRequires:  pkgconfig(gtest)
-Requires:  protobuf-lite
 
 %description
 Google's common Java, C++ and Javascript library for parsing,
@@ -32,13 +27,13 @@ the Android framework since 4.0 (Ice Cream Sandwich).
 Summary:        Geocoding library of %{name}
 Requires:       %{name} = %{version}
 
-%package doc
-Summary:        Documentation of %{name}
-BuildArch:      noarch
-
 %description geocoding
 Contains geocoding information of %{name}, which can be used to
 decide which phone number belongs to which region.
+
+%package doc
+Summary:        Documentation of %{name}
+BuildArch:      noarch
 
 %description doc
 Contains documentation files of %{name}.
@@ -47,7 +42,7 @@ Contains documentation files of %{name}.
 Summary:        Development package of %{name}
 Requires:       %{name} = %{version}
 Requires:       %{name}-geocoding = %{version}
-Requires:       protobuf-devel
+Requires:       pkgconfig(protobuf-lite)
 
 %description devel
 Contains files needed to development with %{name}.
