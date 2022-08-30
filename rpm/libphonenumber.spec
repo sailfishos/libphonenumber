@@ -8,6 +8,7 @@ Source0:        %{name}-%{version}.tar.gz
 
 # https://github.com/google/libphonenumber/pull/2556
 Patch1:         0001-Fix-geocoding-build-when-static-libraries-are-off.patch
+Patch2:         0002-Ensure-build-reproducibility.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
@@ -61,6 +62,7 @@ Contains files needed to development with %{name}.
 # USE_LITE_METADATA=ON - remove some unnecessary data, see https://github.com/google/libphonenumber/blob/master/FAQ.md#what-is-the-metadatalitejsmetadata_lite-option
 # USE_RE2=OFF - don't use google's re2 library (ICU is already in our default install, RE2 isn't)
 # BUILD_STATIC_LIB=OFF - we don't need static libraries
+# CMAKE_BUILD_TYPE=RelWithDebInfo - among other things this helps to achieve build reproducibility by defining the NDEBUG macro
 
 %cmake -DBUILD_GEOCODER=ON \
        -DREGENERATE_METADATA=OFF \
@@ -70,6 +72,7 @@ Contains files needed to development with %{name}.
        -DUSE_LITE_METADATA=ON \
        -DUSE_RE2=OFF \
        -DBUILD_STATIC_LIB=OFF \
+       -DCMAKE_BUILD_TYPE=RelWithDebInfo \
        cpp
 
 %make_build
