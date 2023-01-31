@@ -1,6 +1,6 @@
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        8.12.33
+Version:        8.12.57
 Release:        1
 License:        ASL 2.0 and BSD and MIT
 URL:            https://github.com/google/libphonenumber
@@ -14,6 +14,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  protobuf-compiler
 BuildRequires:  pkgconfig(protobuf-lite)
+BuildRequires:  abseil-cpp-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(icu-i18n)
 BuildRequires:  pkgconfig(gtest)
@@ -43,6 +44,7 @@ Contains documentation files of %{name}.
 Summary:        Development package of %{name}
 Requires:       %{name} = %{version}
 Requires:       %{name}-geocoding = %{version}
+Requires:       abseil-cpp-devel
 Requires:       pkgconfig(protobuf-lite)
 
 %description devel
@@ -64,6 +66,7 @@ Contains files needed to development with %{name}.
 # BUILD_STATIC_LIB=OFF - we don't need static libraries
 # CMAKE_BUILD_TYPE=RelWithDebInfo - among other things this helps to achieve build reproducibility by defining the NDEBUG macro
 
+touch cpp/src/phonenumbers/test_metadata.h
 %cmake -DBUILD_GEOCODER=ON \
        -DREGENERATE_METADATA=OFF \
        -DUSE_ALTERNATE_FORMATS=OFF \
@@ -73,6 +76,7 @@ Contains files needed to development with %{name}.
        -DUSE_RE2=OFF \
        -DBUILD_STATIC_LIB=OFF \
        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+       -DCMAKE_CXX_STANDARD=17 \
        cpp
 
 %make_build
