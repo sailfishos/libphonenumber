@@ -1,14 +1,11 @@
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        8.12.57
+Version:        8.13.6
 Release:        1
 License:        ASL 2.0 and BSD and MIT
 URL:            https://github.com/google/libphonenumber
 Source0:        %{name}-%{version}.tar.gz
-
-# https://github.com/google/libphonenumber/pull/2556
-Patch1:         0001-Fix-geocoding-build-when-static-libraries-are-off.patch
-Patch2:         0002-Ensure-build-reproducibility.patch
+Patch0:         0001-Ensure-build-reproducibility.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
@@ -75,6 +72,7 @@ touch cpp/src/phonenumbers/test_metadata.h
        -DUSE_LITE_METADATA=ON \
        -DUSE_RE2=OFF \
        -DBUILD_STATIC_LIB=OFF \
+       -DBUILD_TESTING=OFF \
        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
        -DCMAKE_CXX_STANDARD=17 \
        cpp
@@ -111,5 +109,6 @@ touch cpp/src/phonenumbers/test_metadata.h
 %files devel
 %defattr(-, root, root, -)
 %{_includedir}/phonenumbers
+%{_libdir}/cmake/libphonenumber
 %{_libdir}/libphonenumber.so
 %{_libdir}/libgeocoding.so
