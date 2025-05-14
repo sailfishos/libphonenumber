@@ -1,9 +1,12 @@
+%undefine __cmake_in_source_build
+%global _vpath_srcdir cpp
+
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        8.13.6
+Version:        9.0.5
 Release:        1
 License:        ASL 2.0 and BSD and MIT
-URL:            https://github.com/google/libphonenumber
+URL:            https://github.com/sailfishos/libphonenumber
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         0001-Ensure-build-reproducibility.patch
 
@@ -74,13 +77,12 @@ touch cpp/src/phonenumbers/test_metadata.h
        -DBUILD_STATIC_LIB=OFF \
        -DBUILD_TESTING=OFF \
        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-       -DCMAKE_CXX_STANDARD=17 \
-       cpp
+       -DCMAKE_CXX_STANDARD=17
 
-%make_build
+%cmake_build
 
 %install
-%make_install
+%cmake_install
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -89,17 +91,14 @@ touch cpp/src/phonenumbers/test_metadata.h
 %postun devel -p /sbin/ldconfig
 
 %files
-%defattr(-, root, root, -)
 %license cpp/LICENSE
 %license LICENSE.Chromium
 %{_libdir}/libphonenumber.so.*
 
 %files geocoding
-%defattr(-, root, root, -)
 %{_libdir}/libgeocoding.so.*
 
 %files doc
-%defattr(-, root, root, -)
 %doc AUTHORS
 %doc CONTRIBUTORS
 %doc README.md
@@ -107,7 +106,6 @@ touch cpp/src/phonenumbers/test_metadata.h
 %doc cpp/README
 
 %files devel
-%defattr(-, root, root, -)
 %{_includedir}/phonenumbers
 %{_libdir}/cmake/libphonenumber
 %{_libdir}/libphonenumber.so
