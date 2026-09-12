@@ -3,7 +3,7 @@
 
 Name:           libphonenumber
 Summary:        A library for manipulating international phone numbers
-Version:        9.0.5
+Version:        9.0.39
 Release:        1
 License:        ASL 2.0 and BSD and MIT
 URL:            https://github.com/sailfishos/libphonenumber
